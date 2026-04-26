@@ -31,7 +31,7 @@ async function readStackOutputs() {
 }
 
 function runAwsCli(args) {
-  const result = spawnSync("aws", args, { stdio: "inherit", shell: true });
+  const result = spawnSync("aws", args, { stdio: "inherit" });
 
   if (result.status !== 0) {
     throw new Error(`AWS CLI command failed: aws ${args.join(" ")}`);
