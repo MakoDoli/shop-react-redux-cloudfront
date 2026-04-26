@@ -1,71 +1,74 @@
-# React-shop-cloudfront
+# AWS CDK Deployment Guide
 
-This is frontend starter project for nodejs-aws mentoring program. It uses the following technologies:
+This project now supports AWS CDK based infrastructure provisioning and static website deployment to S3 + CloudFront.
 
-- [Vite](https://vitejs.dev/) as a project bundler
-- [React](https://beta.reactjs.org/) as a frontend framework
-- [React-router-dom](https://reactrouterdotcom.fly.dev/) as a routing library
-- [MUI](https://mui.com/) as a UI framework
-- [React-query](https://react-query-v3.tanstack.com/) as a data fetching library
-- [Formik](https://formik.org/) as a form library
-- [Yup](https://github.com/jquense/yup) as a validation schema
-- [Serverless](https://serverless.com/) as a serverless framework
-- [Vitest](https://vitest.dev/) as a test runner
-- [MSW](https://mswjs.io/) as an API mocking library
-- [Eslint](https://eslint.org/) as a code linting tool
-- [Prettier](https://prettier.io/) as a code formatting tool
-- [TypeScript](https://www.typescriptlang.org/) as a type checking tool
+## Prerequisites
 
-## Available Scripts
+1. AWS CLI configured locally (`aws configure`).
+2. Valid AWS credentials with permissions for S3, CloudFront, and CloudFormation.
+3. Node.js and npm installed.
 
-### `start`
+## Install dependencies
 
-Starts the project in dev mode with mocked API on local environment.
+```bash
+npm install
+```
 
-### `build`
+## 1) Automated Infra + App Deployment (manual invalidation flow)
 
-Builds the project for production in `dist` folder.
+This flow creates infrastructure with CDK, builds your app, and uploads `dist` files to S3.
+After upload, invalidate CloudFront manually.
 
-### `preview`
+```bash
+npm run cdk:bootstrap
+npm run deploy:cdk:manual
+```
 
-Starts the project in production mode on local environment.
+Manual invalidation command:
 
-### `test`, `test:ui`, `test:coverage`
+```bash
+npm run cloudfront:invalidate:cdk
+```
 
-Runs tests in console, in browser or with coverage.
+You can also run pieces separately:
 
-### `lint`, `prettier`
+```bash
+npm run cdk:synth
+npm run cdk:deploy
+npm run build:web
+npm run site:upload:cdk
+```
 
-Runs linting and formatting for all files in `src` folder.
+## 2) Destroy AWS infrastructure
 
-### `client:deploy`, `client:deploy:nc`
+This removes the CDK-managed S3 bucket and CloudFront distribution.
 
-Deploy the project build from `dist` folder to configured in `serverless.yml` AWS S3 bucket with or without confirmation.
+```bash
+npm run cdk:destroy
+```
 
-### `client:build:deploy`, `client:build:deploy:nc`
+## 3) Automated Infra + Build + Upload + Invalidation
 
-Combination of `build` and `client:deploy` commands with or without confirmation.
+This end-to-end flow deploys infra, builds your app, uploads to S3, and invalidates CloudFront in one command:
 
-### `cloudfront:setup`
+```bash
+npm run deploy:cdk:auto
+```
 
-Deploy configured in `serverless.yml` stack via CloudFormation.
+## Useful outputs
 
-### `cloudfront:domainInfo`
+`npm run cdk:deploy` writes stack outputs to `cdk-outputs.json` (ignored by git), including:
 
-Display cloudfront domain information in console.
+1. S3 bucket name
+2. CloudFront distribution ID
+3. CloudFront URL
 
-### `cloudfront:invalidateCache`
+## Existing URLs
 
-Invalidate cloudfront cache.
+S3 website URL (legacy):
 
-### `cloudfront:build:deploy`, `cloudfront:build:deploy:nc`
+http://aws-for-js-shop-react.s3-website-us-east-1.amazonaws.com/
 
-Combination of `client:build:deploy` and `cloudfront:invalidateCache` commands with or without confirmation.
+CloudFront URL (legacy):
 
-### `cloudfront:update:build:deploy`, `cloudfront:update:build:deploy:nc`
-
-Combination of `cloudfront:setup` and `cloudfront:build:deploy` commands with or without confirmation.
-
-### `serverless:remove`
-
-Remove an entire stack configured in `serverless.yml` via CloudFormation.
+https://divzvweksoicl.cloudfront.net/

@@ -30,6 +30,7 @@ export default function PageProductForm() {
           id,
         }
       : formattedValues;
+
     return upsertAvailableProduct(productToSave, {
       onSuccess: () => {
         invalidateAvailableProducts();
