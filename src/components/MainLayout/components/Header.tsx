@@ -6,6 +6,7 @@ import IconButton from "@mui/material/IconButton";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
+import Button from "@mui/material/Button";
 import Cart from "~/components/MainLayout/components/Cart";
 import { Link as RouterLink } from "react-router-dom";
 import Link from "@mui/material/Link";
@@ -36,6 +37,24 @@ export default function Header() {
             My awesome Store!
           </Link>
         </Typography>
+
+        <Button
+          component={RouterLink}
+          to="/admin/product-form"
+          color="inherit"
+          sx={{ mr: 1 }}
+        >
+          Add Product
+        </Button>
+
+        <Button
+          component={RouterLink}
+          to="/admin/products"
+          color="inherit"
+          sx={{ mr: 1 }}
+        >
+          Dashboard
+        </Button>
 
         {auth && (
           <div>

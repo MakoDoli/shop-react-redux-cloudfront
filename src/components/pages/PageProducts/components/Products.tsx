@@ -4,12 +4,14 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
+import { useNavigate } from "react-router-dom";
 import { formatAsPrice } from "~/utils/utils";
 import AddProductToCart from "~/components/AddProductToCart/AddProductToCart";
 import { useAvailableProducts } from "~/queries/products";
 
 export default function Products() {
   const { data = [], isLoading } = useAvailableProducts();
+  const navigate = useNavigate();
 
   if (isLoading) {
     return <Typography>Loading...</Typography>;
@@ -21,7 +23,13 @@ export default function Products() {
       {data.map(({ count, ...product }, index) => (
         <Grid item key={product.id} xs={12} sm={6} md={4}>
           <Card
-            sx={{ height: "100%", display: "flex", flexDirection: "column" }}
+            sx={{
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              cursor: "pointer",
+            }}
+            onClick={() => navigate(`/products/${product.id}`)}
           >
             <CardMedia
               sx={{ pt: "56.25%" }}
@@ -34,7 +42,7 @@ export default function Products() {
               </Typography>
               <Typography>{formatAsPrice(product.price)}</Typography>
             </CardContent>
-            <CardActions>
+            <CardActions onClick={(event) => event.stopPropagation()}>
               <AddProductToCart product={product} />
             </CardActions>
           </Card>
