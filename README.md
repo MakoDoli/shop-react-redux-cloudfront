@@ -71,4 +71,4 @@ http://aws-for-js-shop-react.s3-website-us-east-1.amazonaws.com/
 
 CloudFront URL (legacy):
 
-https://divzvweksoicl.cloudfront.net/
+https://d3b7a37p5eucdj.cloudfront.net/
