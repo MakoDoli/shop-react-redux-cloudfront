@@ -8,9 +8,14 @@ import { getSignedUrl, uploadCsvToS3 } from "~/queries/import";
 type CSVFileImportProps = {
   url: string;
   title: string;
+  onUploadSuccess?: () => void;
 };
 
-export default function CSVFileImport({ url, title }: CSVFileImportProps) {
+export default function CSVFileImport({
+  url,
+  title,
+  onUploadSuccess,
+}: CSVFileImportProps) {
   const [file, setFile] = React.useState<File>();
   const [isUploading, setIsUploading] = React.useState(false);
   const [step1Error, setStep1Error] = React.useState<string>();
@@ -69,6 +74,7 @@ export default function CSVFileImport({ url, title }: CSVFileImportProps) {
       await uploadCsvToS3(signedUrl, file);
       setSuccessMessage("File uploaded and parsing started.");
       setFile(undefined);
+      onUploadSuccess?.();
     } catch {
       setStep2Error("Upload failed.");
     } finally {

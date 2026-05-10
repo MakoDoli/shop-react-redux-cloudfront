@@ -43,7 +43,7 @@ export default function PageOrder() {
       queryKey: "products",
       queryFn: async () => {
         const res = await axios.get<AvailableProduct[]>(
-          `${API_PATHS.bff}/product/available`
+          `${API_PATHS.bff}/products`,
         );
         return res.data;
       },
@@ -92,7 +92,7 @@ export default function PageOrder() {
           onSubmit={(values) =>
             updateOrderStatus(
               { id: order.id, ...values },
-              { onSuccess: () => invalidateOrder(order.id) }
+              { onSuccess: () => invalidateOrder(order.id) },
             )
           }
         >

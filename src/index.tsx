@@ -14,9 +14,21 @@ const queryClient = new QueryClient({
   },
 });
 
-if (import.meta.env.DEV) {
+const shouldUseMocks =
+  import.meta.env.DEV && import.meta.env.VITE_USE_MOCKS === "true";
+
+if (shouldUseMocks) {
   const { worker } = await import("./mocks/browser");
   worker.start({ onUnhandledRequest: "bypass" });
+} else if (import.meta.env.DEV && "serviceWorker" in navigator) {
+  const registrations = await navigator.serviceWorker.getRegistrations();
+  await Promise.all(
+    registrations
+      .filter((registration) =>
+        registration.active?.scriptURL.includes("mockServiceWorker.js"),
+      )
+      .map((registration) => registration.unregister()),
+  );
 }
 
 const container = document.getElementById("app");
@@ -33,5 +45,5 @@ root.render(
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </BrowserRouter>
-  </React.StrictMode>
+  </React.StrictMode>,
 );
