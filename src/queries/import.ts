@@ -10,8 +10,17 @@ export async function getSignedUrl(
   importEndpoint = `${API_PATHS.import}/import`,
 ): Promise<string> {
   const encodedFileName = encodeURIComponent(fileName);
+  const authorization_token = localStorage.getItem("authorization_token");
+
   const res = await axios.get<GetSignedUrlResponse>(
     `${importEndpoint}?name=${encodedFileName}`,
+    {
+      headers: {
+        ...(authorization_token && {
+          Authorization: `Basic ${authorization_token}`,
+        }),
+      },
+    },
   );
   return res.data.signedUrl;
 }
