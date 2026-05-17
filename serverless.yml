@@ -84,6 +84,12 @@ resources:
               #   HTTPPort: 80
               #   HTTPSPort: 443
               #   OriginProtocolPolicy: https-only
+            - DomainName: wtzerlzpal.execute-api.us-east-1.amazonaws.com
+              Id: importApiOrigin
+              OriginPath: /prod
+              CustomOriginConfig:
+                HTTPSPort: 443
+                OriginProtocolPolicy: https-only
           Enabled: true
           IPV6Enabled: true
           HttpVersion: http2
@@ -116,6 +122,22 @@ resources:
             ViewerProtocolPolicy: redirect-to-https
             Compress: true
             DefaultTTL: 0
+          CacheBehaviors:
+            - PathPattern: /import*
+              AllowedMethods: ["GET", "HEAD", "OPTIONS"]
+              CachedMethods: ["GET", "HEAD", "OPTIONS"]
+              ForwardedValues:
+                Headers:
+                  - Access-Control-Request-Headers
+                  - Access-Control-Request-Method
+                  - Origin
+                QueryString: true
+                Cookies:
+                  Forward: none
+              TargetOriginId: importApiOrigin
+              ViewerProtocolPolicy: redirect-to-https
+              Compress: true
+              DefaultTTL: 0
           ## The certificate to use when viewers use HTTPS to request objects.
           ViewerCertificate:
             CloudFrontDefaultCertificate: true
